@@ -11,8 +11,5 @@ namespace PokeAPI
     {
         Task<string> GetStringAsync(string requestUri);
         Task<Stream> GetStreamAsync(Uri requestUri);
-
-        string GetString(string requestUri);
-        Stream GetStream(Uri requestUri);
     }
 }

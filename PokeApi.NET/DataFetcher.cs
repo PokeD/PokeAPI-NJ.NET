@@ -16,7 +16,7 @@ namespace PokeAPI
     /// </summary>
     public static class DataFetcher
     {
-        internal readonly static string
+        internal const string
             SITE_URL = "http://pokeapi.co",
             BASE_URL = SITE_URL + "/api/v2/",
             SLASH = "/";
@@ -28,8 +28,8 @@ namespace PokeAPI
         static async Task<JsonData> GetJsonAsync(Uri url) => JsonMapper.ToObject(await client.GetStringAsync(url.AbsoluteUri));
         static async Task<JsonData> GetJsonAsync(string obj) => JsonMapper.ToObject(await client.GetStringAsync(BASE_URL + obj));
 
-        static JsonData GetJsonSync(Uri url) => JsonMapper.ToObject(client.GetString(url.AbsoluteUri));
-        static JsonData GetJsonSync(string obj) => JsonMapper.ToObject(client.GetString(BASE_URL + obj));
+        static JsonData GetJson(Uri url) => GetJsonAsync(url).Result;
+        static JsonData GetJson(string obj) => GetJsonAsync(obj).Result;
 
         #region static Dictionary<Type, string> UrlOfType = new Dictionary<Type, string> { [...] };
         static Dictionary<Type, string> UrlOfType = new Dictionary<Type, string>

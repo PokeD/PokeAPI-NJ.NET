@@ -70,7 +70,7 @@ namespace PokeAPI
                 lock (_lock)
                 {
                     if (IsActive)
-                        dict.Add (key, item.Value);
+                        dict.Add(key, item.Value);
 
                     return item.Value;
                 }
@@ -101,7 +101,7 @@ namespace PokeAPI
 
         public int Count => dict.Count;
         public bool IsReadOnly => true;
-        public ICollection<TKey  > Keys   => dict.Keys  ;
+        public ICollection<TKey> Keys => dict.Keys;
         public ICollection<TValue> Values => dict.Values;
 
         public void Clear()
@@ -164,11 +164,11 @@ namespace PokeAPI
 
         }
 
-        public Task <T> GetAsync () => GetAsync (0);
-        public       T  GetSync  () => GetSync  (0);
-        public Maybe<T> TryGet   () => TryGet   (0);
-        public       T  TryGetDef() => TryGetDef(0);
+        public Task<T> GetAsync() => GetAsync(0);
+        public T GetSync() => GetSync(0);
+        public Maybe<T> TryGet() => TryGet(0);
+        public T TryGetDef() => TryGetDef(0);
 
-        public       T  TryGetDef(T def) => base.TryGetDef(0, def);
+        public T TryGetDef(T def) => base.TryGetDef(0, def);
     }
 }
