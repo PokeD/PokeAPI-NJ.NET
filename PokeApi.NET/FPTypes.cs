@@ -18,7 +18,7 @@ namespace PokeAPI
     {
         public readonly static Maybe<T> Nothing = new Maybe<T>();
 
-        T v;
+        readonly T v;
 
         public bool HasValue
         {

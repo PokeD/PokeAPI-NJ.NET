@@ -169,6 +169,6 @@ namespace PokeAPI
         public Maybe<T> TryGet   () => TryGet   (0);
         public       T  TryGetDef() => TryGetDef(0);
 
-        public new   T  TryGetDef(T def) => base.TryGetDef(0, def);
+        public       T  TryGetDef(T def) => base.TryGetDef(0, def);
     }
 }

@@ -9,10 +9,10 @@ namespace PokeAPI
     {
         readonly HttpClient client = new HttpClient();
 
-        public Task<Stream> GetStreamAsync(Uri    requestUri) => client.GetStreamAsync(requestUri);
+        public Task<Stream> GetStreamAsync(Uri requestUri) => client.GetStreamAsync(requestUri);
         public Task<string> GetStringAsync(string requestUri) => client.GetStringAsync(requestUri);
 
-        public Stream GetStreamSync(Uri    requestUri) => client.GetStreamAsync(requestUri).Result;
-        public string GetStringSync(string requestUri) => client.GetStringAsync(requestUri).Result;
+        public Stream GetStream(Uri requestUri) => client.GetStreamAsync(requestUri).Result;
+        public string GetString(string requestUri) => client.GetStringAsync(requestUri).Result;
     }
 }
