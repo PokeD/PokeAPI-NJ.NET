@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard1.1</TargetFramework>
+    <TargetFramework>net45</TargetFramework>
     <Description>Wrapper for http://www.pokeapi.co/</Description>
     <Company>PoroCYon</Company>
     <Authors>PoroCYon, Theodore Tsirpanis</Authors>
