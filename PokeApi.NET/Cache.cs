@@ -55,29 +55,7 @@ namespace PokeAPI
 
             throw new KeyNotFoundException();
         }
-        public TValue GetSync(TKey key)
-        {
-            TValue cacheItem;
-            lock (_lock)
-            {
-                if (dict.TryGetValue(key, out cacheItem))
-                    return cacheItem;
-            }
-
-            var item = get(key).Result;
-            if (item.HasValue)
-            {
-                lock (_lock)
-                {
-                    if (IsActive)
-                        dict.Add(key, item.Value);
-
-                    return item.Value;
-                }
-            }
-
-            throw new KeyNotFoundException();
-        }
+        public TValue Get(TKey key) => GetAsync(key).Result;
         public Maybe<TValue> TryGet(TKey key)
         {
             TValue v;
@@ -165,7 +143,7 @@ namespace PokeAPI
         }
 
         public Task<T> GetAsync() => GetAsync(0);
-        public T GetSync() => GetSync(0);
+        public T Get() => Get(0);
         public Maybe<T> TryGet() => TryGet(0);
         public T TryGetDef() => TryGetDef(0);
 
