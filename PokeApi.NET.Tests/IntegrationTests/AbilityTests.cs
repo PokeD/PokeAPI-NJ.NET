@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using PokeAPI;
 using Xunit;
 
-namespace PokeAPI.Tests.IntegrationTests
+namespace PokeApi.NET.Tests.IntegrationTests
 {
     public class AbilityTests
     {
@@ -19,9 +16,9 @@ namespace PokeAPI.Tests.IntegrationTests
         [InlineData(10001)][InlineData(10002)][InlineData(10003)][InlineData(10004)][InlineData(10005)][InlineData(10006)][InlineData(10007)][InlineData(10008)][InlineData(10009)][InlineData(10010)]
         [InlineData(10011)][InlineData(10012)][InlineData(10013)][InlineData(10014)][InlineData(10015)][InlineData(10016)][InlineData(10017)][InlineData(10018)][InlineData(10019)][InlineData(10020)][InlineData(10021)][InlineData(10022)][InlineData(10023)][InlineData(10024)][InlineData(10025)][InlineData(10026)][InlineData(10027)][InlineData(10028)][InlineData(10029)][InlineData(10030)][InlineData(10031)][InlineData(10032)][InlineData(10033)][InlineData(10034)][InlineData(10035)][InlineData(10036)][InlineData(10037)][InlineData(10038)][InlineData(10039)][InlineData(10040)][InlineData(10041)][InlineData(10042)][InlineData(10043)][InlineData(10044)][InlineData(10045)]
         [InlineData(10046)][InlineData(10047)][InlineData(10048)][InlineData(10049)][InlineData(10050)][InlineData(10051)][InlineData(10052)][InlineData(10053)][InlineData(10054)][InlineData(10055)][InlineData(10056)][InlineData(10057)][InlineData(10058)][InlineData(10059)][InlineData(10060)]
-        public async Task GetsAbility(int abilityID)
+        public async Task GetsAbility(int abilityId)
         {
-            var t = DataFetcher.GetApiObject<Ability>(abilityID);
+            var t = await DataFetcher.GetApiObject<Ability>(abilityId);
             Assert.NotNull(t);
         }
     }

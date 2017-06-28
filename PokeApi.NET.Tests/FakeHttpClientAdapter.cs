@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
+using PokeAPI;
 
 // 'invalid number' (of next warning suppression)
 #pragma warning disable 1692
@@ -13,25 +12,17 @@ using System.Threading.Tasks;
 // already 'calculated'.
 #pragma warning disable 1998
 
-namespace PokeAPI.Tests
+namespace PokeApi.NET.Tests
 {
     public class FakeHttpClientAdapter : IHttpClientAdapter
     {
-        internal readonly static IHttpClientAdapter Singleton = new FakeHttpClientAdapter();
+        internal static readonly IHttpClientAdapter Singleton = new FakeHttpClientAdapter();
 
-        public Task<Stream> GetStreamAsync(Uri    requestUri)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<Stream> GetStreamAsync(Uri requestUri) => throw new NotImplementedException();
 
         public Task<string> GetStringAsync(string requestUri) => Task.FromResult(GetJsonFromFile(requestUri));
 
-        public Stream GetStreamSync(Uri    requestUri)
-        {
-            throw new NotImplementedException();
-        }
-        public string GetStringSync(string requestUri) => GetJsonFromFile(requestUri);
-
-        string GetJsonFromFile(string requestUri) => File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "JsonResponses", requestUri.GenerateSlug() + ".json"));
+        private static string GetJsonFromFile(string requestUri) => File.ReadAllText(Path.Combine(Environment.CurrentDirectory,
+            "JsonResponses", requestUri.GenerateSlug() + ".json"));
     }
 }

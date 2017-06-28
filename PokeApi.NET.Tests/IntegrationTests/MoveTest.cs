@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using PokeAPI;
 using Xunit;
 
-namespace PokeAPI.Tests.IntegrationTests
+namespace PokeApi.NET.Tests.IntegrationTests
 {
     public class MoveTest
     {
@@ -29,9 +26,9 @@ namespace PokeAPI.Tests.IntegrationTests
         [InlineData(561)][InlineData(562)][InlineData(563)][InlineData(564)][InlineData(565)][InlineData(566)][InlineData(567)][InlineData(568)][InlineData(569)][InlineData(570)][InlineData(571)][InlineData(572)][InlineData(573)][InlineData(574)][InlineData(575)][InlineData(576)][InlineData(577)][InlineData(578)][InlineData(579)][InlineData(580)][InlineData(581)][InlineData(582)][InlineData(583)][InlineData(584)][InlineData(585)][InlineData(586)][InlineData(587)][InlineData(588)][InlineData(589)][InlineData(590)][InlineData(591)][InlineData(592)][InlineData(593)][InlineData(594)][InlineData(595)]
         [InlineData(596)][InlineData(597)][InlineData(598)][InlineData(599)][InlineData(600)][InlineData(601)][InlineData(602)][InlineData(603)][InlineData(604)][InlineData(605)][InlineData(606)][InlineData(607)][InlineData(608)][InlineData(609)][InlineData(610)][InlineData(611)][InlineData(612)][InlineData(613)][InlineData(614)][InlineData(615)][InlineData(616)][InlineData(617)][InlineData(618)][InlineData(619)][InlineData(620)][InlineData(621)]
         [InlineData(10001)][InlineData(10002)][InlineData(10003)][InlineData(10004)][InlineData(10005)][InlineData(10006)][InlineData(10007)][InlineData(10008)][InlineData(10009)][InlineData(10010)][InlineData(10011)][InlineData(10012)][InlineData(10013)][InlineData(10014)][InlineData(10015)][InlineData(10016)][InlineData(10017)][InlineData(10018)]
-        public async Task GetsMove(int moveID)
+        public async Task GetsMove(int moveId)
         {
-            var t = await DataFetcher.GetApiObject<Move>(moveID);
+            var t = await DataFetcher.GetApiObject<Move>(moveId);
             Assert.NotNull(t);
         }
     }

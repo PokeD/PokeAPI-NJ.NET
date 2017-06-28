@@ -1,20 +1,45 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokeApi.NET", "PokeApi.NET\PokeApi.NET.csproj", "{B957F608-502A-496E-B26C-666EAFBEC985}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokeApi.NET.Tests", "PokeApi.NET.Tests\PokeApi.NET.Tests.csproj", "{FEC588FA-8129-4F3A-98DA-6D5209B90BC9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B957F608-502A-496E-B26C-666EAFBEC985}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B957F608-502A-496E-B26C-666EAFBEC985}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B957F608-502A-496E-B26C-666EAFBEC985}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B957F608-502A-496E-B26C-666EAFBEC985}.Debug|x64.Build.0 = Debug|Any CPU
+		{B957F608-502A-496E-B26C-666EAFBEC985}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B957F608-502A-496E-B26C-666EAFBEC985}.Debug|x86.Build.0 = Debug|Any CPU
 		{B957F608-502A-496E-B26C-666EAFBEC985}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B957F608-502A-496E-B26C-666EAFBEC985}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B957F608-502A-496E-B26C-666EAFBEC985}.Release|x64.ActiveCfg = Release|Any CPU
+		{B957F608-502A-496E-B26C-666EAFBEC985}.Release|x64.Build.0 = Release|Any CPU
+		{B957F608-502A-496E-B26C-666EAFBEC985}.Release|x86.ActiveCfg = Release|Any CPU
+		{B957F608-502A-496E-B26C-666EAFBEC985}.Release|x86.Build.0 = Release|Any CPU
+		{FEC588FA-8129-4F3A-98DA-6D5209B90BC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEC588FA-8129-4F3A-98DA-6D5209B90BC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEC588FA-8129-4F3A-98DA-6D5209B90BC9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FEC588FA-8129-4F3A-98DA-6D5209B90BC9}.Debug|x64.Build.0 = Debug|Any CPU
+		{FEC588FA-8129-4F3A-98DA-6D5209B90BC9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FEC588FA-8129-4F3A-98DA-6D5209B90BC9}.Debug|x86.Build.0 = Debug|Any CPU
+		{FEC588FA-8129-4F3A-98DA-6D5209B90BC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEC588FA-8129-4F3A-98DA-6D5209B90BC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEC588FA-8129-4F3A-98DA-6D5209B90BC9}.Release|x64.ActiveCfg = Release|Any CPU
+		{FEC588FA-8129-4F3A-98DA-6D5209B90BC9}.Release|x64.Build.0 = Release|Any CPU
+		{FEC588FA-8129-4F3A-98DA-6D5209B90BC9}.Release|x86.ActiveCfg = Release|Any CPU
+		{FEC588FA-8129-4F3A-98DA-6D5209B90BC9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

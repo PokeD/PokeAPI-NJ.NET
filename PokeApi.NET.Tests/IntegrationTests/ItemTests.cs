@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using PokeAPI;
 using Xunit;
 
-namespace PokeAPI.Tests.IntegrationTests
+namespace PokeApi.NET.Tests.IntegrationTests
 {
     public class ItemTests
     {
@@ -30,9 +26,9 @@ namespace PokeAPI.Tests.IntegrationTests
         [InlineData(630)][InlineData(631)][InlineData(632)][InlineData(633)][InlineData(634)][InlineData(635)][InlineData(636)][InlineData(637)][InlineData(638)][InlineData(639)][InlineData(640)][InlineData(641)][InlineData(642)][InlineData(643)][InlineData(644)][InlineData(645)][InlineData(646)][InlineData(647)][InlineData(648)][InlineData(649)][InlineData(650)][InlineData(651)][InlineData(652)][InlineData(653)][InlineData(654)][InlineData(655)][InlineData(656)][InlineData(657)][InlineData(658)][InlineData(659)][InlineData(660)][InlineData(661)][InlineData(662)][InlineData(663)][InlineData(664)][InlineData(665)][InlineData(666)][InlineData(668)][InlineData(669)]
         [InlineData(670)][InlineData(671)][InlineData(673)][InlineData(674)][InlineData(675)][InlineData(676)][InlineData(677)][InlineData(678)][InlineData(679)][InlineData(681)][InlineData(682)][InlineData(683)][InlineData(684)][InlineData(685)][InlineData(686)][InlineData(687)][InlineData(688)][InlineData(689)][InlineData(690)][InlineData(691)][InlineData(692)][InlineData(693)][InlineData(694)][InlineData(695)][InlineData(696)][InlineData(697)][InlineData(698)][InlineData(699)][InlineData(700)][InlineData(701)][InlineData(702)][InlineData(703)][InlineData(704)][InlineData(705)][InlineData(706)][InlineData(707)][InlineData(708)][InlineData(709)]
         [InlineData(710)][InlineData(711)][InlineData(712)][InlineData(713)][InlineData(714)][InlineData(715)][InlineData(716)][InlineData(717)][InlineData(718)][InlineData(719)][InlineData(720)][InlineData(721)][InlineData(722)][InlineData(723)][InlineData(724)][InlineData(725)][InlineData(726)][InlineData(727)][InlineData(728)][InlineData(729)][InlineData(730)][InlineData(731)][InlineData(732)][InlineData(733)][InlineData(734)][InlineData(735)][InlineData(736)][InlineData(737)][InlineData(738)][InlineData(739)][InlineData(740)][InlineData(741)][InlineData(742)][InlineData(743)][InlineData(744)][InlineData(745)][InlineData(746)][InlineData(747)][InlineData(748)][InlineData(749)]
-        public async Task GetsItem(int itemID)
+        public async Task GetsItem(int itemId)
         {
-            var t = await DataFetcher.GetApiObject<Item>(itemID);
+            var t = await DataFetcher.GetApiObject<Item>(itemId);
             Assert.NotNull(t);
         }
     }
