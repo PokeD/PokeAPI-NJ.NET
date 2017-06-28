@@ -6,7 +6,7 @@ A .NET Wrapper for http://www.pokeapi.co/. See the `master` branch for the v1 ve
 Usage:
 -----------------------------
 
-### C\#
+<h3>C#</h3>
 
 ``` cs
 using System;
@@ -26,9 +26,9 @@ float cRate = p.CaptureRate;
 
 To get the value behind the `Task<T>` object synchronously, use the `Result` property.
 
-### F\#
+<h3>F#</h3>
 
-``` fs
+``` fsharp
 open System
 open PokeAPI
 
