@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net45; netstandard2.0</TargetFrameworks>
-    <Description>Wrapper for http://www.pokeapi.co/</Description>
+    <Description>A .NET Wrapper for http://www.pokeapi.co/, a REST API for accessing Pokémon information.</Description>
     <Company>PoroCYon</Company>
     <Authors>PoroCYon</Authors>
     <Copyright>Copyright © PoroCYon 2013-2015 Licensed under the WTFPL.</Copyright>
