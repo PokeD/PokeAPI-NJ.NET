@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace PokeAPI
 {
-    public enum Unit : byte { Value }
+    public enum Unit : byte { }
 
     public static class Maybe
     {

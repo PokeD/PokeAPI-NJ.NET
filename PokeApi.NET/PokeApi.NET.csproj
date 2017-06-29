@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFrameworks>net45; netstandard2.0</TargetFrameworks>
     <Description>Wrapper for http://www.pokeapi.co/</Description>
     <Company>PoroCYon</Company>
     <Authors>PoroCYon</Authors>
@@ -13,9 +13,12 @@
     <PackageIconUrl>https://vignette3.wikia.nocookie.net/youtubepoop/images/4/4c/Pokeball.png</PackageIconUrl>
     <PackageProjectUrl>https://gitlab.com/PoroCYon/PokeApi.NET</PackageProjectUrl>
     <RepositoryUrl>https://gitlab.com/PoroCYon/PokeApi.NET</RepositoryUrl>
+    <DebugType>portable</DebugType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile> 
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="System.Net.Http" Version="4.3.2" />
-    <PackageReference Include="System.ValueTuple" Version="4.3.1" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
+    <PackageReference Include="System.Net.Http" Version="4.3.*" />
+    <PackageReference Include="System.ValueTuple" Version="4.3.*" />
   </ItemGroup>
 </Project>
