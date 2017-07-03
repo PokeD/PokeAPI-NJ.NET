@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace PokeApi.NET.Tests
+namespace PokeApi.Tests
 {
     public static class Extensions
     {

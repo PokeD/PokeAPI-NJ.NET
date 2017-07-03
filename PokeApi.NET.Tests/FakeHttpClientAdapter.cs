@@ -12,7 +12,7 @@ using PokeAPI;
 // already 'calculated'.
 #pragma warning disable 1998
 
-namespace PokeApi.NET.Tests
+namespace PokeApi.Tests
 {
     public class FakeHttpClientAdapter : IHttpClientAdapter
     {

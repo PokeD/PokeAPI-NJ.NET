@@ -2,7 +2,7 @@
 using PokeAPI;
 using Xunit;
 
-namespace PokeApi.NET.Tests.IntegrationTests
+namespace PokeApi.Tests.IntegrationTests
 {
     public class ItemTests
     {
