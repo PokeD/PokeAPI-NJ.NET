@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net452</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
@@ -10,8 +10,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PokeApi.NET\PokeApi.NET.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="JsonResponses\**\*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
