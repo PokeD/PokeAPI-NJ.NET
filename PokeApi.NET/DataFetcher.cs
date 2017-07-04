@@ -17,7 +17,7 @@ namespace PokeAPI
     public static class DataFetcher
     {
         internal readonly static string
-            SITE_URL = "http://pokeapi.co",
+            SITE_URL = "https://pokeapi.co",
             BASE_URL = SITE_URL + "/api/v2/",
             SLASH = "/";
 
