@@ -2,9 +2,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokeApi.NET", "PokeApi.NET\PokeApi.NET.csproj", "{B957F608-502A-496E-B26C-666EAFBEC985}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokeApi-NJ.NET", "PokeApi.NET\PokeApi-NJ.NET.csproj", "{B957F608-502A-496E-B26C-666EAFBEC985}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokeApi.NET.Tests", "PokeApi.NET.Tests\PokeApi.NET.Tests.csproj", "{FEC588FA-8129-4F3A-98DA-6D5209B90BC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokeApi-NJ.NET.Tests", "PokeApi.NET.Tests\PokeApi-NJ.NET.Tests.csproj", "{FEC588FA-8129-4F3A-98DA-6D5209B90BC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,5 +43,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {364CF8BA-08FB-43A1-B405-10E52FE13D69}
 	EndGlobalSection
 EndGlobal

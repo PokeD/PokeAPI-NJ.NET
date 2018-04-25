@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using LitJson;
+
+using Newtonsoft.Json;
 
 namespace PokeAPI
 {
     public interface IResource<T>
     {
-        Uri Url
-        {
-            get;
-        }
+        Uri Url { get; }
 
         Task<T> GetObject();
     }
@@ -21,11 +18,7 @@ namespace PokeAPI
         /// <summary>
         /// The path to the referenced data.
         /// </summary>
-        public string Path
-        {
-            get;
-            internal set;
-        }
+        public string Path { get; internal set; }
 
         public Uri Url
         {
@@ -38,62 +31,59 @@ namespace PokeAPI
             }
         }
 
-        public virtual async Task<T> GetObject() => await DataFetcher.GetAny<T>(Url);
+        public virtual async Task<T> GetObject() => await DataFetcher.GetJsonOfAny<T>(Url);
     }
-    internal class StructResourceFromStringConverter<T> : IJsonConverter
+
+    internal class StructResourceFromStringConverter<T> : JsonConverter
     {
-        public bool Deserialize(JsonData j, Type t /* StructResource<T> */, out object value)
-        {
-            if (j.JsonType != JsonType.String)
+        public override bool CanConvert(Type objectType) => objectType == typeof(string);
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            => new StructResource<T> { Path = Convert.ToString(reader.Value) };
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            => throw new NotImplementedException();
+    }
+
+    public class ApiResource<T> : IResource<T> where T : ApiObject
+    {
+        /// <summary>
+        /// The ID of the referenced resource.
+        /// </summary>
+        [JsonIgnore]
+        public int ID
+        {   
+            get
             {
-                value = null;
-                return false;
+                if (_id == null)
+                    _id = int.TryParse(Url.Segments.Last().Trim('/'), out var id) ? id : -1;
+                return _id.Value;
             }
-
-            value = new StructResource<T> { Path = (string)j };
-            return true;
         }
-    }
+        private int? _id;
 
-    public class ApiResource<T> : IResource<T>
-        where T : ApiObject
-    {
         /// <summary>
         /// The URL of the referenced resource.
         /// </summary>
-        public Uri Url
-        {
-            get;
-            internal set;
-        }
+        [JsonProperty("url")]
+        public Uri Url { get; internal set; }
 
         public virtual async Task<T> GetObject() => await DataFetcher.GetApiObject<T>(Url);
     }
-    public class NamedApiResource<T> : ApiResource<T>
-        where T : NamedApiObject
+
+    public class NamedApiResource<T> : ApiResource<T> where T : NamedApiObject
     {
         /// <summary>
         /// The name of the referenced resource.
         /// </summary>
-        public string Name
-        {
-            get;
-            internal set;
-        }
+        [JsonProperty("name")]
+        public string Name { get; internal set; }
     }
-    internal class ApiResourceFromStringConverter<T> : IJsonConverter
-        where T : ApiObject
-    {
-        public bool Deserialize(JsonData j, Type t /* ApiResource<T> */, out object value)
-        {
-            if (j.JsonType != JsonType.String)
-            {
-                value = null;
-                return false;
-            }
 
-            value = new ApiResource<T> { Url = new Uri((string)j, UriKind.Absolute) };
-            return true;
-        }
+    internal class ApiResourceFromStringConverter<T> : JsonConverter where T : ApiObject
+    {
+        public override bool CanConvert(Type objectType) => objectType == typeof(string);
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            => new ApiResource<T> { Url = new Uri(Convert.ToString(reader.Value), UriKind.Absolute) };
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            => throw new NotImplementedException();
     }
 }

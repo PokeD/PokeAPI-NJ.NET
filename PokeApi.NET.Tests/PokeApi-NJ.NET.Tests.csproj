@@ -9,6 +9,6 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PokeApi.NET\PokeApi.NET.csproj" />
+    <ProjectReference Include="..\PokeApi.NET\PokeApi-NJ.NET.csproj" />
   </ItemGroup>
 </Project>

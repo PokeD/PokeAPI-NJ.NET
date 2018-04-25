@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using PokeAPI;
+
 using Xunit;
 
 namespace PokeAPI.Tests.IntegrationTests

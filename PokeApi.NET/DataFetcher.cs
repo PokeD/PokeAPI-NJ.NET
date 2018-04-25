@@ -1,12 +1,42 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
-using LitJson;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace PokeAPI
 {
+    /*
+    public interface IDataFetcher
+    {
+        void SetHttpClient(IHttpClientAdapter client);
+
+        CacheGetter<int, ApiObject> ChacheOf<T>() where T : ApiObject;
+        CacheGetter<string, ApiObject> CacheOfByName<T>() where T : NamedApiObject;
+        CacheGetter<Uri, ApiObject> CacheOfByUrl<T>() where T : ApiObject;
+        CacheGetter<ValueTuple<int, int>, ApiObject> ListCacheOf<T>() where T : ApiObject;
+
+        Task<T> GetJsonOf<T>(int id) where T : ApiObject;
+        Task<T> GetJsonOf<T>(string name) where T : NamedApiObject;
+        Task<T> GetJsonOf<T>(Uri url) where T : ApiObject;
+        Task<T> GetJsonOfAny<T>(Uri url);
+        Task<T> GetListJsonOf<T>(int offset, int limit) where T : ApiObject;
+        bool ShouldCacheData { get; set; }
+        void ClearAll();
+
+        Task<T> GetApiObject<T>(int id) where T : ApiObject;
+        Task<T> GetApiObject<T>(Uri url) where T : ApiObject;
+        Task<T> GetNamedApiObject<T>(string name) where T : NamedApiObject;
+        Task<T> GetNamedApiObject<T>(Uri url) where T : NamedApiObject;
+        Task<T> GetAny<T>(Uri url);
+        //Task<ResourceList<T, TInner>> GetResourceList<T, TInner>(int limit = 20) where TInner : ApiObject where T : ApiResource<TInner>;
+    }
+    */
+
     // TODO:
     //   * docs
     //   * utility stuff from v1?
@@ -16,23 +46,21 @@ namespace PokeAPI
     /// </summary>
     public static class DataFetcher
     {
-        internal readonly static string
+        internal static readonly string
             SITE_URL = "https://pokeapi.co",
             BASE_URL = SITE_URL + "/api/v2/",
             SLASH = "/";
 
-        static bool shouldCache = true;
+        internal static IHttpClientAdapter Client = new HttpClientDefaultAdapter();
 
-        internal static IHttpClientAdapter client = new HttpClientDefaultAdapter();
-
-        static async Task<JsonData> GetJsonAsync(Uri url) => JsonMapper.ToObject(await client.GetStringAsync(url.AbsoluteUri));
-        static async Task<JsonData> GetJsonAsync(string obj) => JsonMapper.ToObject(await client.GetStringAsync(BASE_URL + obj));
-
-        static JsonData GetJson(Uri url) => GetJsonAsync(url).Result;
-        static JsonData GetJson(string obj) => GetJsonAsync(obj).Result;
+        /// <summary>
+        /// Sets the <see cref="IHttpClientAdapter" /> the data fetcher uses.
+        /// </summary>
+        /// <param name="client">The <see cref="IHttpClientAdapter" /> to use.</param>
+        public static void SetHttpClient(IHttpClientAdapter client) => Client = client ?? throw new ArgumentNullException(nameof(client));
 
         #region static Dictionary<Type, string> UrlOfType = new Dictionary<Type, string> { [...] };
-        static Dictionary<Type, string> UrlOfType = new Dictionary<Type, string>
+        private static readonly Dictionary<Type, string> UrlOfType = new Dictionary<Type, string>
         {
             { typeof(ContestEffect     ), "contest-effect"       },
             { typeof(SuperContestEffect), "super-contest-effect" },
@@ -82,7 +110,7 @@ namespace PokeAPI
             { typeof(Nature        ), "nature"          },
             { typeof(PokeathlonStat), "pokeathlon-stat" },
             { typeof(Pokemon       ), "pokemon"         },
-            { typeof(PokemonColour ), "pokemon-color"   },
+            { typeof(PokemonColor ), "pokemon-color"   },
             { typeof(PokemonForm   ), "pokemon-form"    },
             { typeof(PokemonHabitat), "pokemon-habitat" },
             { typeof(PokemonShape  ), "pokemon-shape"   },
@@ -95,91 +123,108 @@ namespace PokeAPI
         };
         #endregion
 
-        readonly static Dictionary<Type, Cache<int, JsonData>> caches = UrlOfType.ToDictionary(kvp => kvp.Key, kvp => new Cache<int, JsonData>(async i => Maybe.Just(await GetJsonAsync(kvp.Value + SLASH + i))));
-        readonly static Dictionary<Type, Cache<string, JsonData>> strCaches = UrlOfType.Skip(3).ToDictionary(kvp => kvp.Key, kvp => new Cache<string, JsonData>(async s => Maybe.Just(await GetJsonAsync(kvp.Value + SLASH + s))));
+        private static Dictionary<Type, Dictionary<int, ApiObject>> Cache { get; } = new Dictionary<Type, Dictionary<int, ApiObject>>();
+        private static Dictionary<Type, Dictionary<string, NamedApiObject>> CacheString { get; } = new Dictionary<Type, Dictionary<string, NamedApiObject>>();
+        private static Dictionary<Type, Dictionary<Uri, ApiObject>> CacheUrl { get; } = new Dictionary<Type, Dictionary<Uri, ApiObject>>();
+        private static Dictionary<Type, Dictionary<Uri, object>> CacheMisc { get; } = new Dictionary<Type, Dictionary<Uri, object>>();
 
-        readonly static Dictionary<Type, Cache<Uri, JsonData>> urlCaches = UrlOfType.ToDictionary(kvp => kvp.Key, kvp => new Cache<Uri, JsonData>(async u => Maybe.Just(JsonMapper.ToObject(await client.GetStringAsync(u.AbsoluteUri)))));
+        public static bool ShouldCacheData { get; set; }
 
-        readonly static Dictionary<Type, Cache<ValueTuple<int, int>, JsonData>> listCaches = UrlOfType.ToDictionary(kvp => kvp.Key, kvp => new Cache<ValueTuple<int, int>, JsonData>(async t => Maybe.Just(await GetJsonAsync(kvp.Value + SLASH + "?offset=" + t.Item1 + "&limit=" + t.Item2))));
-
-        readonly static Cache<Uri, JsonData> miscCache = new Cache<Uri, JsonData>(async u => Maybe.Just(await GetJsonAsync(u)));
-
-        /// <summary>
-        /// Sets the <see cref="IHttpClientAdapter" /> the data fetcher uses.
-        /// </summary>
-        /// <param name="client">The <see cref="IHttpClientAdapter" /> to use.</param>
-        public static void SetHttpClient(IHttpClientAdapter client)
+        public static async Task<T> CacheOf<T>(int id) where T : ApiObject
         {
-            if (client == null)
-                throw new ArgumentNullException(nameof(client));
+            var type = typeof(T);
 
-            DataFetcher.client = client;
+            if(!ShouldCacheData)
+                return JsonConvert.DeserializeObject<T>(await Client.GetStringAsync(BASE_URL + UrlOfType[type] + SLASH + id));
+
+            if (!Cache.ContainsKey(type))
+                Cache.Add(type, new Dictionary<int, ApiObject>());
+
+            var dictionary = Cache[type];
+            if (!dictionary.TryGetValue(id, out var apiObject))
+            {
+                apiObject = JsonConvert.DeserializeObject<T>(await Client.GetStringAsync(BASE_URL + UrlOfType[type] + SLASH + id));
+                dictionary.Add(id, apiObject);
+            }
+
+            return (T) apiObject;
         }
-
-        public static CacheGetter<int, JsonData> ChacheOf<T>() where T : ApiObject => new CacheGetter<int, JsonData>(caches[typeof(T)]);
-        public static CacheGetter<string, JsonData> CacheOfByName<T>() where T : NamedApiObject => new CacheGetter<string, JsonData>(strCaches[typeof(T)]);
-        public static CacheGetter<Uri, JsonData> CacheOfByUrl<T>() where T : ApiObject => new CacheGetter<Uri, JsonData>(urlCaches[typeof(T)]);
-
-        public static CacheGetter<ValueTuple<int, int>, JsonData> ListCacheOf<T>() where T : ApiObject => new CacheGetter<ValueTuple<int, int>, JsonData>(listCaches[typeof(T)]);
-
-        /// <summary>
-        /// Gets or sets whether fetched data should be cached or not. Default is true.
-        /// </summary>
-        /// <remarks>Controls the <see cref="CacheGetter{TKey, TValue}.IsActive" /> value of all caches in the <see cref="DataFetcher" /> class. The value returned by the getter is the value passed to the last set call.</remarks>
-        public static bool ShouldCacheData
+        public static async Task<T> CacheOfByName<T>(string name) where T : NamedApiObject
         {
-            get
-            {
-                return shouldCache;
-            }
-            set
-            {
-                if (value == shouldCache)
-                    return;
+            var type = typeof(T);
 
-                foreach (var c in caches.Values) c.IsActive = value;
-                foreach (var c in strCaches.Values) c.IsActive = value;
-                foreach (var c in listCaches.Values) c.IsActive = value;
-                miscCache.IsActive = value;
+            if (!ShouldCacheData)
+                return JsonConvert.DeserializeObject<T>(await Client.GetStringAsync(BASE_URL + UrlOfType[type] + SLASH + name));
 
-                shouldCache = value;
+            if (!CacheString.ContainsKey(type))
+                CacheString.Add(type, new Dictionary<string, NamedApiObject>());
+
+            var dictionary = CacheString[type];
+            if (!dictionary.TryGetValue(name, out var apiObject))
+            {
+                apiObject = JsonConvert.DeserializeObject<T>(await Client.GetStringAsync(BASE_URL + UrlOfType[type] + SLASH + name));
+                dictionary.Add(name, apiObject);
             }
+
+            return (T) apiObject;
         }
+        public static async Task<T> CacheOfByUrl<T>(Uri url) where T : ApiObject
+        {
+            if (!ShouldCacheData)
+                return JsonConvert.DeserializeObject<T>(await Client.GetStringAsync(url.AbsoluteUri));
 
-        public static Task<JsonData> GetJsonOf<T>(int id) where T : ApiObject => caches[typeof(T)].GetAsync(id);
-        public static Task<JsonData> GetJsonOf<T>(string name) where T : NamedApiObject => strCaches[typeof(T)].GetAsync(name);
-        public static Task<JsonData> GetJsonOf<T>(Uri url) where T : ApiObject => urlCaches[typeof(T)].GetAsync(url);
-        public static Task<JsonData> GetJsonOfAny(Uri url) => miscCache.GetAsync(url);
+            var type = typeof(T);
 
-        public static Task<JsonData> GetListJsonOf<T>(int offset, int limit) where T : ApiObject => listCaches[typeof(T)].GetAsync(ValueTuple.Create(offset, limit));
+            if (!CacheUrl.ContainsKey(type))
+                CacheUrl.Add(type, new Dictionary<Uri, ApiObject>());
+
+            var dictionary = CacheUrl[type];
+            if (!dictionary.TryGetValue(url, out var apiObject))
+            {
+                apiObject = JsonConvert.DeserializeObject<T>(await Client.GetStringAsync(url.AbsoluteUri));
+                dictionary.Add(url, apiObject);
+            }
+
+            return (T) apiObject;
+        }
+        public static async Task<T> CacheOfObject<T>(Uri url)
+        {
+            if (!ShouldCacheData)
+                return JsonConvert.DeserializeObject<T>(await Client.GetStringAsync(url.AbsoluteUri));
+
+            var type = typeof(T);
+
+            if (!CacheMisc.ContainsKey(type))
+                CacheMisc.Add(type, new Dictionary<Uri, object>());
+
+            var dictionary = CacheMisc[type];
+            if (!dictionary.TryGetValue(url, out var apiObject))
+            {
+                apiObject = JsonConvert.DeserializeObject<T>(await Client.GetStringAsync(url.AbsoluteUri));
+                dictionary.Add(url, apiObject);
+            }
+
+            return (T) apiObject;
+        }
 
         public static void ClearAll()
         {
-            caches.Clear();
-            strCaches.Clear();
-            urlCaches.Clear();
-            listCaches.Clear();
-            miscCache.Clear();
+            Cache.Clear();
+            CacheString.Clear();
+            CacheUrl.Clear();
         }
 
-        public static async Task<T> GetApiObject<T>(int id) where T : ApiObject => JsonMapper.ToObject<T>(await GetJsonOf<T>(id));
-        public static async Task<T> GetApiObject<T>(Uri url) where T : ApiObject => JsonMapper.ToObject<T>(await GetJsonOf<T>(url));
-        public static async Task<T> GetNamedApiObject<T>(string name) where T : NamedApiObject => JsonMapper.ToObject<T>(await GetJsonOf<T>(name));
-        public static async Task<T> GetNamedApiObject<T>(Uri url) where T : NamedApiObject => JsonMapper.ToObject<T>(await GetJsonOf<T>(url));
 
-        public static async Task<T> GetAny<T>(Uri url)
-        {
-            JsonData j = await GetJsonOfAny(url);
-            return JsonMapper.ToObject<T>(j);
-        }
+        public static Task<T> GetJsonOf<T>(int id) where T : ApiObject => CacheOf<T>(id);
+        public static Task<T> GetJsonOf<T>(string name) where T : NamedApiObject => CacheOfByName<T>(name);
+        public static Task<T> GetJsonOf<T>(Uri url) where T : ApiObject => CacheOfByUrl<T>(url);
+        public static Task<T> GetJsonOfAny<T>(Uri url) => CacheOfObject<T>(url);
+        public static Task<T> GetJsonOfAny<T>(string obj) => GetJsonOfAny<T>(new Uri(BASE_URL + obj));
 
-        public static async Task<ResourceList<T, TInner>> GetResourceList<T, TInner>(int limit = 20)
-            where TInner : ApiObject
-            where T : ApiResource<TInner>
-        {
-            var f = JsonMapper.ToObject<ResourceListFragment<T, TInner>>(await GetListJsonOf<TInner>(0, limit));
-
-            return new ResourceList<T, TInner>(f.Count, limit, f);
-        }
+        public static Task<T> GetApiObject<T>(int id) where T : ApiObject => GetJsonOf<T>(id);
+        public static Task<T> GetApiObject<T>(Uri url) where T : ApiObject => GetJsonOf<T>(url);
+        public static Task<T> GetNamedApiObject<T>(string name) where T : NamedApiObject => GetJsonOf<T>(name);
+        public static Task<T> GetNamedApiObject<T>(Uri url) where T : NamedApiObject => GetJsonOf<T>(url);
+        public static Task<T> GetAny<T>(Uri url) => GetJsonOfAny<T>(url);
     }
 }

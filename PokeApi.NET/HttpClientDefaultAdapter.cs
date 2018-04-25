@@ -7,11 +7,11 @@ namespace PokeAPI
 {
     public class HttpClientDefaultAdapter : IHttpClientAdapter
     {
-        readonly HttpClient client = new HttpClient();
+        private readonly HttpClient client = new HttpClient();
 
         public HttpClientDefaultAdapter()
         {
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("PokeAPI.NET (https://gitlab.com/PoroCYon/PokeApi.NET or a fork of it)");
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("PokeAPI-NJ.NET (https://github.com/PokeD/PokeAPI-NJ.NET or a fork of it)");
         }
 
         public Task<Stream> GetStreamAsync(Uri requestUri) => client.GetStreamAsync(requestUri);
