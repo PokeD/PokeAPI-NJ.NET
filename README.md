@@ -1,7 +1,7 @@
 PokeApi.NET
 ===========
 
-[NuGet package](https://www.nuget.org/packages/PokeApi.NET/)
+[NuGet package](https://www.nuget.org/packages/PokeApi-NJ.NET/)
 
 A .NET Wrapper for http://www.pokeapi.co/. See the `master` branch for the v1 version.
 
